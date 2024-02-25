@@ -74,7 +74,10 @@ const mutation = useMutation({
             onClick={handleLike}/> 
             ):( 
             <FavoriteBorderOutlinedIcon onClick={handleLike}/>)}
-             {data.length} Likes
+            {data !== undefined && (
+  <>{data.length} Likes</>
+)}
+
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
