@@ -14,10 +14,12 @@ import {
 } from '@tanstack/react-query';
 import { makeRequest } from "../../axios.js";
 import { useLocation } from "react-router-dom";
+import { AuthContext } from "../../context/authContext.js";
+import { useContext } from "react";
 
 const Profile = () => {
-
-   const userId = useLocation().pathname.split('/')[2]
+   const { currentUser } = useContext(AuthContext);
+   const userId = parseInt(useLocation().pathname.split("/")[2]);
 
   const { isPending, error, data } = useQuery({
     queryKey: ["user"],queryFn: () =>
@@ -25,6 +27,30 @@ const Profile = () => {
     return res.data;
   })
 });
+
+const { isPending : risPending, data: relationshipData } = useQuery({
+  queryKey: ["relationships"],queryFn: () =>
+makeRequest.get("/relationships?followedUserId=" + userId).then((res)=>{
+  return res.data;
+})
+});
+
+const queryClient = useQueryClient();
+
+const mutation = useMutation({
+  mutationFn: (following)=>{
+    if(following) return makeRequest.delete("/relationships?userId="+ userId);
+    return makeRequest.post("/relationships" , {userId});
+  },
+  onSuccess: () => {
+    // Invalidate and refetch
+    queryClient.invalidateQueries({ queryKey: ["relationships"] })
+  },
+})
+
+const handleFollow = ()=>{
+  mutation.mutate(relationshipData.includes(currentUser.id));
+}
 
 console.log("user",data);
   return (
@@ -77,7 +103,14 @@ console.log("user",data);
           <>{data.website}</> )}</span>
               </div>
             </div>
-            <button>follow</button>
+            {risPending ? "Loading" : userId === currentUser.id ? 
+            (<button>update</button>
+            ) : (
+            <button onClick={handleFollow}>
+              {relationshipData.includes(currentUser.id)
+               ?"Following"
+                :"Follow"}</button>
+          )}
           </div>
           <div className="right">
             <EmailOutlinedIcon />

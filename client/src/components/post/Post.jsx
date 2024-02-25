@@ -39,9 +39,11 @@ const mutation = useMutation({
   },
 })
 
-  const handleLike = () => {
-    mutation.mutate(data.includes(currentUser.id))
+const handleLike = () => {
+  if (data !== undefined) {
+    mutation.mutate(data.includes(currentUser.id));
   }
+};
   
   return (
     <div className="post">
