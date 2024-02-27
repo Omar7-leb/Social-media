@@ -117,7 +117,7 @@ console.log("user",data);
             <MoreVertIcon />
           </div>
         </div>
-      <Posts/>
+      <Posts userId={userId}/>
       </div>
     </div>
   );
