@@ -26,6 +26,16 @@ const Post = ({ post }) => {
   })
 });
 
+const { isLoading, errorr, data: comments } = useQuery({
+  queryKey: ["comments", post.id],
+  queryFn: () =>
+    makeRequest.get("/comments?postId=" + post.id).then((res) => {
+      console.log("comments", res.data);
+      return res.data;
+    }),
+});
+
+
 const queryClient = useQueryClient()
 
 const mutation = useMutation({
@@ -44,13 +54,14 @@ const handleLike = () => {
     mutation.mutate(data.includes(currentUser.id));
   }
 };
+
   
   return (
     <div className="post">
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <img src={post.profilePic} alt="" />
+            <img src={"/upload/" +post.profilePic} alt="" />
             <div className="details">
               <Link
                 to={`/profile/${post.userId}`}
@@ -82,9 +93,11 @@ const handleLike = () => {
 
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
-            <TextsmsOutlinedIcon />
-            12 Comments
-          </div>
+  <TextsmsOutlinedIcon />
+  {comments !== undefined && (
+    <>{comments.length} Comments</>
+  )}
+</div>
           <div className="item">
             <ShareOutlinedIcon />
             Share

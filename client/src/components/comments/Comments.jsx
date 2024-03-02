@@ -40,7 +40,7 @@ const handleClick = async (e) => {
   return (
     <div className="comments">
       <div className="write">
-        <img src={currentUser.profilePic} alt="" />
+        <img src={"/upload/" +currentUser.profilePic} alt="" />
         <input type="text" placeholder="write a comment" 
         value={desc}
         onChange={e=>setDesc(e.target.value)} />
@@ -49,7 +49,7 @@ const handleClick = async (e) => {
       {isPending ?"Loading" 
       : data.map((comment) => (
         <div className="comment">
-          <img src={comment.profilePic} alt="" />
+          <img src={"/upload/" +comment.profilePic} alt="" />
           <div className="info">
             <span>{comment.name}</span>
             <p>{comment.desc}</p>
