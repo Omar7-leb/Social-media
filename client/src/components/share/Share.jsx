@@ -11,8 +11,11 @@ import {
 import { makeRequest} from "../../axios";
 
 const Share = () => {
+  const {currentUser} = useContext(AuthContext);
   const [file,setFile] = useState(null);
   const [desc,setDesc] = useState("");
+
+  console.log(currentUser);
 
   const upload =  async ()=>{
     try {
@@ -25,7 +28,7 @@ const Share = () => {
     }
   }
 
-  const {currentUser} = useContext(AuthContext);
+  
 
   const queryClient = useQueryClient()
 

@@ -9,7 +9,7 @@ export const getStories = (req, res) => {
   jwt.verify(token, "secretkey", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
 
-    const q = `SELECT img FROM stories AS s JOIN users AS u ON (u.id = s.userId)
+    const q = `SELECT s.img, s.userName FROM stories AS s JOIN users AS u ON (u.id = s.userId)
     LEFT JOIN relationships AS r ON (s.userId = r.followedUserId AND r.followerUserId= ?) LIMIT 4`;
 
     db.query(q, [userInfo.id], (err, data) => {
@@ -26,15 +26,25 @@ export const addStory = (req, res) => {
   jwt.verify(token, "secretkey", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
 
-    const q = "INSERT INTO stories(`img`, `userId`) VALUES (?)";
-    const values = [
-      req.body.img,
-      userInfo.id,
-    ];
+    // Fetch the username associated with the user ID
+    const getUserQuery = "SELECT username FROM users WHERE id = ?";
+    db.query(getUserQuery, [userInfo.id], (getUserErr, userData) => {
+      if (getUserErr) return res.status(500).json(getUserErr);
+      if (userData.length === 0) return res.status(404).json("User not found");
 
-    db.query(q, [values], (err, data) => {
-      if (err) return res.status(500).json(err);
-      return res.status(200).json("Story has been created.");
+      const username = userData[0].username;
+
+      const q = "INSERT INTO stories (`img`, `userId`, `userName`) VALUES (?, ?, ?)";
+      const values = [
+        req.body.img,
+        userInfo.id,
+        username, 
+      ];
+
+      db.query(q, values, (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json("Story has been created.");
+      });
     });
   });
 };

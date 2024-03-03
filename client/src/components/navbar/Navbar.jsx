@@ -11,10 +11,14 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
-
+import axios from "axios";
 const Navbar = () => {
   const { toggle, darkMode } = useContext(DarkModeContext);
   const { currentUser } = useContext(AuthContext);
+
+  const handleLogout = async () => {
+  
+  };
 
   return (
     <div className="navbar">
@@ -38,13 +42,26 @@ const Navbar = () => {
         <PersonOutlinedIcon />
         <EmailOutlinedIcon />
         <NotificationsOutlinedIcon />
-        <div className="user">
-          <img
-            src={"/upload/" +currentUser.profilePic}
-            alt=""
-          />
-          <span>{currentUser.name}</span>
-        </div>
+        <div className="logout">
+  <button
+    style={{
+      padding: "8px 16px",
+      backgroundColor: "#f44336",
+      color: "white",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+      textDecoration: "none",
+      outline: "none",
+      fontSize: "14px",
+      fontWeight: "bold",
+    }}
+    onClick={handleLogout}
+  >
+    Logout
+  </button>
+</div>
+
       </div>
     </div>
   );

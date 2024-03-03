@@ -78,15 +78,19 @@ const Stories = () => {
         )}
       </div>
       {showForm && (
-        <form onSubmit={handleShare}>
-          <input
-            type="file"
-            id="file"
-            onChange={(e) => setFile(e.target.files[0])}
-          />
-          <button type="submit">Share</button>
-        </form>
-      )}
+    <form onSubmit={handleShare} style={{ margin: '10px 0', display: 'flex', alignItems: 'center' }}>
+      <input
+        type="file"
+        id="file"
+        onChange={(e) => setFile(e.target.files[0])}
+        style={{ marginRight: '10px' }}
+      />
+      <button type="submit" style={{ padding: '5px 10px', background: 'green', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', marginRight: '5px' }}>Share</button>
+      <button type="button" onClick={() => setShowForm(false)} style={{ padding: '5px 10px', background: 'red', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Cancel</button>
+    </form>
+  )}
+  
+
       {error ? (
         "Something went wrong"
       ) : isPending ? (
@@ -94,8 +98,8 @@ const Stories = () => {
       ) : (
         data.map((story) => (
           <div className="story" key={story.id}>
-            <img src={story.img} alt="" />
-            <span>{story.name}</span>
+            <img src={"/upload/" +story.img} alt="" />
+            <span>{story.userName}</span>
           </div>
         ))
       )}
