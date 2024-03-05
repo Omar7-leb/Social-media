@@ -35,3 +35,18 @@ export const updateUser = (req, res) => {
     })
   })
 };
+
+export const searchUser = (req, res) => {
+
+  const searchQuery = "SELECT * FROM users WHERE `name` LIKE ?";
+  const searchTerm = `%${req.body.searchbar}%`;
+
+  db.query(searchQuery, searchTerm, (err, data) => {
+    if (err) {
+      console.error('Error searching users:', err);
+      return res.status(500).json(err);
+    }
+
+    res.json(data);
+  });
+}
