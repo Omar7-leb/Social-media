@@ -20,6 +20,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
+import Friends from "./components/Friends/Friends";
 function App() {
   const {currentUser} = useContext(AuthContext);
 
@@ -68,6 +69,10 @@ function App() {
         {
           path: "/profile/:id",
           element: <Profile />,
+        },
+        {
+          path: "/friends",
+          element: <Friends/>,
         },
       ],
     },

@@ -71,3 +71,10 @@
     }
   }
 }
+
+/* Assuming you have a CSS file for your component */
+.item a {
+  color: inherit; /* Use the color inherited from the parent */
+  text-decoration: none; /* Remove underline */
+}
+
