@@ -26,3 +26,11 @@
     color: #333;
   }
   
+  .item-image {
+    width: 50px; /* Adjust the width as needed */
+    height: 50px; /* Adjust the height as needed */
+    border-radius: 50%; /* Make the image round */
+    object-fit: cover; /* Ensure the image covers the entire area */
+    margin-right: 10px; /* Add margin to separate the image from the text */
+  }
+  

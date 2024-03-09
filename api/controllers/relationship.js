@@ -50,11 +50,11 @@ export const deleteRelationship = (req, res) => {
     const userId = req.params.userId;
   
     // Use userId to fetch friends associated with the user from the database
-    const q = "SELECT u.id, u.username FROM users u JOIN relationships r ON u.id = r.followedUserId WHERE r.followerUserId = ?";
+    const q = "SELECT u.id, u.username , u.profilePic FROM users u JOIN relationships r ON u.id = r.followedUserId WHERE r.followerUserId = ?";
     db.query(q, [userId], (err, data) => {
       if (err) return res.status(500).json(err);
   
-      const friends = data.map((friend) => ({ id: friend.id, username: friend.username }));
+      const friends = data.map((friend) => ({ id: friend.id, username: friend.username , img: friend.profilePic}));
       return res.status(200).json(friends);
     });
   };

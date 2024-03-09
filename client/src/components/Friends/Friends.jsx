@@ -21,6 +21,7 @@ const Friends = () => {
       } catch (error) {
         console.error('Error fetching friends:', error);
       }
+      console.log("ff",friends);
     };
     fetchFriends();
   }, []);
@@ -31,6 +32,7 @@ const Friends = () => {
       <div className="friend-list">
         {friends.map((friend) => (
           <div key={friend.id} className="friend">
+            <img src={"/upload/" + friend.img} alt="Friends" className="item-image" />
             <span className="friend-username">{friend.username}</span>
           </div>
         ))}
