@@ -68,3 +68,27 @@ export const deletePost = (req, res) =>{
   });
 });
 }
+
+export const updatePost = (req, res) => {
+  const token = req.cookies.accessToken;
+  if(!token) return res.status(401).json("Not logged in!");
+
+  jwt.verify(token, "secretkey" , (err, userInfo) => {
+    if(err) return res.status(403).json("Token is not valid!")
+    
+    const q = "UPDATE posts SET `desc`=?, `img`=? WHERE `id`=? AND `userId`=?";
+
+    const values = [
+      req.body.desc,
+      req.body.img,
+      req.params.id,
+      userInfo.id
+    ];
+
+  db.query(q, values , (err,data)=>{
+   if (err) return res.status(500).json(err);
+   if (data.affectedRows>0) return res.status(200).json('Post has been updated successfully');
+   return res.status(403).json("You can update only your post")
+  });
+});
+}

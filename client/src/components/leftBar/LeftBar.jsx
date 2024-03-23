@@ -16,10 +16,10 @@ import { AuthContext } from "../../context/authContext";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 
-const LeftBar = () => {
 
+const LeftBar = ({ user }) => {
   const { currentUser } = useContext(AuthContext);
-
+  
   return (
     <div className="leftBar">
       <div className="container">

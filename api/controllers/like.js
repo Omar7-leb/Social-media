@@ -45,4 +45,21 @@ export const deleteLike = (req, res) => {
         return res.status(200).json('Post has been disliked');
       });
      });
-  }
+  };
+
+  export const getLikesActivity = (req, res) => {
+    const token = req.cookies.accessToken;
+    if(!token) return res.status(401).json("Not logged in!");
+  
+    jwt.verify(token, "secretkey" , (err, userInfo) => {
+      if(err) return res.status(403).json("Token is not valid!")
+  
+      const q = "SELECT  u.username FROM social.users u JOIN social.posts p ON u.id = p.userId JOIN social.likes l ON p.id = l.postId WHERE l.userId = ? AND u.id != ? limit 3;";
+      db.query(q,[userInfo.id,userInfo.id] ,(err,data) => {
+        if (err) return res.status(500).json(err);
+          return res.status(200).json(data);
+      });
+  
+    });
+  };
+  

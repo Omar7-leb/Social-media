@@ -42,16 +42,37 @@
             }
           }
         }
-        button{
-          position: absolute;
-          top : 30px;
-          right: 0;
-          border: none ;
-          background-color: #f0544f;
-          padding: 5px;
-          cursor: pointer ;
-          color : white;
+        .button-container {
+          position: relative;
         }
+        
+        .button-container {
+          position: relative;
+        }
+        
+        .edit-button,
+        .delete-button {
+          position: absolute;
+          top: 0;
+          padding: 3px; /* Decrease padding */
+          cursor: pointer;
+          background: none;
+          border: none;
+          font-size: 14px; /* Decrease font size */
+        }
+        
+        .edit-button {
+          right: 60px; /* Adjust the distance from the delete button */
+          color:#3273dc;
+        }
+        
+        .delete-button {
+          right: 0;
+          color:#f0544f
+        }
+        
+        
+        
       }
 
       .content {

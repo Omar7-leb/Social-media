@@ -15,10 +15,13 @@ import {
 } from '@tanstack/react-query';
 import { makeRequest } from "../../axios.js";
 import { AuthContext } from "../../context/authContext.js";
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { Edit } from "../editPost/editPost.jsx";
 
 const Post = ({ post }) => {
   const [commentOpen, setCommentOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
   const { currentUser } = useContext(AuthContext);
   const queryClient = useQueryClient();
 
@@ -47,9 +50,19 @@ const Post = ({ post }) => {
       if (postId) return makeRequest.delete("/posts/" +postId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["likes"]);
+      queryClient.invalidateQueries(["posts"]);
     }
   });
+
+  const editMutation = useMutation({
+    mutationFn: (postData) => {
+      return makeRequest.put(`/posts/${postData.id}`, postData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["posts"]);
+    }
+  });
+  
 
 
   const shareMutation = useMutation({
@@ -58,7 +71,7 @@ const Post = ({ post }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["posts"]);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 30, behavior: 'smooth' });
     }
   });
 
@@ -76,8 +89,11 @@ const Post = ({ post }) => {
     deleteMutation.mutate(post.id)
   }
 
+  const handleEdit = () => {
+    editMutation.mutate(post.id)
+  }
   return (
-    <div className="post">
+    <div className="post" key={post.id}>
       <div className="container">
         <div className="user">
           <div className="userInfo">
@@ -92,18 +108,15 @@ const Post = ({ post }) => {
               <span className="date">{moment(post.createdAt).fromNow()}</span>
             </div>
           </div>
-          <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
-{menuOpen && (
-  <>
-    {post.userId === currentUser.id ? (
-      <button onClick={handleDelete}>delete</button>
-    ) : (
-      <button onClick={() => alert("You can only delete your own posts.")}>
-        delete
-      </button>
-    )}
-  </>
-)}
+          <>
+  {post.userId === currentUser.id && (
+    <div className="button-container">
+      <button className="edit-button" onClick={() => setOpenUpdate(true)}><FaEdit />edit</button>
+      <button className="delete-button" onClick={handleDelete}><FaTrash />delete</button>
+    </div>
+  )}
+</>
+
         </div>
         <div className="content">
           <p>{post.desc}</p>
@@ -136,6 +149,8 @@ const Post = ({ post }) => {
         </div>
         {commentOpen && <Comments postId={post.id} />}
       </div>
+      {openUpdate && <Edit setOpenUpdate={setOpenUpdate} post={post} />}
+
     </div>
   );
 };
