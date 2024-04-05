@@ -11,24 +11,23 @@ import {
 import { makeRequest} from "../../axios";
 
 const Share = () => {
-  const {currentUser} = useContext(AuthContext);
   const [file,setFile] = useState(null);
   const [desc,setDesc] = useState("");
 
-  console.log(currentUser);
 
-  const upload =  async ()=>{
+  const upload =  async (file)=>{
     try {
       const formData = new FormData();
+      console.log("image:",file);
       formData.append("file", file)
       const res = await makeRequest.post("/upload", formData);
       return res.data;
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
-  
+  const {currentUser} = useContext(AuthContext);
 
   const queryClient = useQueryClient()
 
@@ -42,14 +41,19 @@ const Share = () => {
     },
   })
   
-  const handleClick = async (e) => {
-     e.preventDefault();
-     let imgUrl = "";
-     if(file) imgUrl = await upload();
-     mutation.mutate({desc, img: imgUrl});
-     setDesc("")
-     setFile(null)
-  };
+ const handleClick = async (e) => {
+  e.preventDefault();
+  console.log("File:", file); // Check if file state is set correctly
+  let imgUrl = "";
+  if (file) {
+    imgUrl = await upload(file); // Pass the file parameter to the upload function
+    console.log("imgUrl:", imgUrl); // Check if imgUrl is obtained correctly
+  }
+  mutation.mutate({ desc, img: imgUrl });
+  setDesc("");
+  setFile(null);
+};
+
 
   return (
     <div className="share">
@@ -58,23 +62,33 @@ const Share = () => {
           <div className="left">
             <img src={"/upload/" +currentUser.profilePic} alt=""/>
             <input type="text" placeholder={`What's on your mind ${currentUser.name}?`} 
-          onChange={e=>setDesc(e.target.value)}
+           onChange={(e)=>setDesc(e.target.value)}
           value={desc}
           />
         </div>
         <div className="right">
-            {file && <img className="file" alt="" src={URL.createObjectURL(file)}/>}
+            {file && (
+            <img className="file" alt="" src={URL.createObjectURL(file)}/>)}
           </div>
           </div>
         <hr />
         <div className="bottom">
           <div className="left">
-            <input type="file" id="file" style={{display:"none"}} 
-            onChange={e=>setFile(e.target.files[0])} />
+          
             <label htmlFor="file">
               <div className="item">
                 <img src={Image} alt="" />
-                <span>Add Image</span>
+                <span>
+                <input 
+               type="file" 
+              id="file" 
+             // style={{display:"none"}} 
+             onChange={(e) => {
+             console.log("File selected:", e.target.files[0]);
+             setFile(e.target.files[0]);
+             }} 
+              />
+                </span>
               </div>
             </label>
             <div className="item">

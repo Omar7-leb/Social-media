@@ -2,18 +2,18 @@ import "./rightBar.scss";
 import { useQuery , useQueryClient , useMutation } from '@tanstack/react-query';
 import { makeRequest } from "../../axios.js";
 import { AuthContext } from "../../context/authContext";
-import { useContext } from "react";
-import { useLocation } from "react-router-dom";
+import { useContext, useState } from "react";
 
 const RightBar = () => {
   const { currentUser } = useContext(AuthContext);
-  const userId = parseInt(useLocation().pathname.split("/")[2]);
+  const [suggestions, setSuggestions] = useState([]);
 
-  const { isPending, error, data: suggestions } = useQuery({
+  const { isPending, error, data: suggestionsData } = useQuery({
     queryKey: ["getSuggester"],
     queryFn: () => makeRequest.get(`/users/getSuggester`).then((res) => res.data)
   });
-  console.log(suggestions);
+
+  console.log(suggestionsData);
 
   const { isLoading, error: likesError, data: likes } = useQuery({
     queryKey: ["likes"],
@@ -21,15 +21,15 @@ const RightBar = () => {
   });
 
   console.log("likesss", likes);
-  console.log("sugg", suggestions);
+  console.log("sugg", suggestionsData);
 
-  const { isPending : risPending, data: relationshipData } = useQuery({
+  const { isPending: risPending, data: relationshipData } = useQuery({
     queryKey: ["relationships"],
     queryFn: () => makeRequest.get("/relationships?followedUserId=" + relationshipData.id).then((res) => res.data)
   });
-  
+
   const queryClient = useQueryClient();
-  
+
   const mutation = useMutation({
     mutationFn: (userId) => makeRequest.post("/relationships", { userId }),
     onSuccess: () => {
@@ -37,9 +37,13 @@ const RightBar = () => {
       queryClient.invalidateQueries({ queryKey: ["relationships"] })
     },
   });
-  
+
   const handleFollow = (user) => {
     mutation.mutateAsync(user.id);
+  };
+
+  const handleDismiss = (userId) => {
+    setSuggestions(suggestions => suggestions.filter(user => user.id !== userId));
   };
 
   return (
@@ -49,7 +53,7 @@ const RightBar = () => {
           <span>Suggestions For You</span>
           {isPending && <p>Loading...</p>}
           {error && <p>Error fetching suggestions</p>}
-          {suggestions && suggestions.map((user) => (
+          {suggestionsData && suggestionsData.map((user) => (
             <div className="user" key={user.id}>
               <div className="userInfo">
                 <img src={`/upload/${user.profilePic}`} alt="" />
@@ -59,7 +63,7 @@ const RightBar = () => {
                 {risPending ? "Loading" : user.id !== currentUser.id && (
                   <button onClick={() => handleFollow(user)}>follow</button>
                 )}
-                <button>dismiss</button>
+                <button onClick={() => handleDismiss(user)}>dismiss</button>
               </div>
             </div>
           ))}

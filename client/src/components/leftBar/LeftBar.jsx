@@ -52,9 +52,11 @@ const LeftBar = ({ user }) => {
             <span>Groups</span>
           </div>
           <div className="item">
-            <img src={Market} alt="" />
-            <span>Marketplace</span>
-          </div>
+        <Link to="http://127.0.0.1:8000/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+       <img src={Market} alt="" style={{ marginRight: '8px' }} />
+       <span>Marketplace</span>
+       </Link>
+       </div>
           <div className="item">
             <img src={Watch} alt="" />
             <span>Watch</span>
